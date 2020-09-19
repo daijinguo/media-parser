@@ -1,0 +1,31 @@
+language: cpp
+
+os:
+  - osx
+
+compiler:
+  - clang
+
+install:
+  - brew install qt5
+  
+before_script:
+  - brew link --force qt5
+  - which qmake
+
+script:
+  - mkdir -p build && cd build
+  - qmake ../
+  - make
+
+before_deploy:
+  - zip -r media-parser.${TRAVIS_TAG}.zip media-parser.app
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  overwrite: true
+  file: media-parser.${TRAVIS_TAG}.zip
+  skip_cleanup: true
+  on:
+    tags: true
